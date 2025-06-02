@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Playwright Actions', () => {
+test.describe('Playwright Actions @Regression', () => {
   test.beforeEach( async({ page }) => {
     await page.goto('https://www.techglobal-training.com/frontend/html-elements');
   });
@@ -28,9 +28,6 @@ test.describe('Playwright Actions', () => {
 
   test('Select Dropdown Option', async({ page }) => {
       await page.locator('#company_dropdown1').selectOption({ value: 'Tesla' });
-      //await page.waitForTimeout(3000);
-
       await page.locator('#company_dropdown2').selectOption({ index: 1 }); // index-zero based
-     // await page.waitForTimeout(3000);
   });
 });

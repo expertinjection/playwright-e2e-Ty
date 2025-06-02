@@ -1,39 +1,51 @@
-import { test, expect} from '@playwright/test'
-test.describe('Playwright Action', ()=>{
-    test.beforeEach(async({page})=>{
-        await page.goto('https://www.techglobal-training.com')
-    })
-    test('validate headers', async({page}) => {
-        const headerElements = page.locator('[class^="Header_menus"]>div')
-        //console.log(await headerElements.count())
-        expect(await headerElements.count()).toBe(3)
-        const expectedHeaderTexets = ['Testing', 'Exercises', 'Mock Interviews']
-        // console.log(await headerElements.first().innerText())
-        // console.log(await headerElements.nth(1).innerText())
-        // console.log(await headerElements.last().innerText())
+import { test, expect } from "@playwright/test";
 
-        for (let i = 0; i < await headerElements.count(); i++){
-            expect(await headerElements.nth(i).innerText()).toBe(expectedHeaderTexets[i])
-        }
-    })
+test.describe("Playwright Multiple Elements @Regression", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("https://www.techglobal-training.com");
+  });
+
+  /*
+  Go to "https://www.techglobal-training.com"
+  Validate the header has 3 menu items
+    Testing
+    Exercises
+    Mock Interviews
+  */
+
+  test("Validate Headers", async ({ page }) => {
+    const headerElements = page.locator('[class^="Header_menus"]>div');
+
+    expect(await headerElements.count()).toBe(3);
+
+    const expectedHeaderItemTexts = ["Testing", "Exercises", "Mock Interviews"];
+
+    for (let i = 0; i < (await headerElements.count()); i++) {
+      expect(await headerElements.nth(i).innerText()).toBe(
+        expectedHeaderItemTexts[i]
+      );
+    }
+
+    // console.log(await headerElements.first().innerText());
+    // console.log(await headerElements.nth(1).innerText());
+    // console.log(await headerElements.last().innerText());
+  });
+
   /*
   Go to "https://www.techglobal-training.com"
   Validate the footer has 5 social media items
     Each has an href containing "techglobal"
     Each has target attribute equals "_blank"
   */
-    test('Vaildate footer', async({page}) => {
-        const footerElements = page.locator('[class^="Footer_socials"] > a')
-        //console.log(await footerElements.count())
-        expect(await footerElements.count()).toBe(5)
+  test("Validate Footer Social Icons", async ({ page }) => {
+      const socialLinkElements = page.locator('[class^="Footer_socials"]>a');
+      const count = await socialLinkElements.count();
 
-        const expectedText = 'techglobal'
-        const expectedAtrrVal = '_blank'
-        for (let i = 0; i < await footerElements.count(); i++){
-            const elementsAtrr = await footerElements.nth(i).getAttribute('href')
-            expect(elementsAtrr).toContain(expectedText)
-            const elementsTarget = await footerElements.nth(i).getAttribute('target')
-            expect (elementsTarget).toContain(expectedAtrrVal)
-        }
-    })
-})
+      expect(count).toBe(5);
+
+      for(let i = 0; i < count; i++) {
+        expect(await socialLinkElements.nth(i).getAttribute('href')).toContain('techglobal');
+        expect(await socialLinkElements.nth(i).getAttribute('target')).toBe('_blank');
+      }
+  });
+});

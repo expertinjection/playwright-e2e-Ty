@@ -1,35 +1,47 @@
-import { test, expect} from '@playwright/test'
-test.describe('Playwright Action', ()=>{
-    test.beforeEach(async({page})=>{
-        await page.goto('https://www.techglobal-training.com/frontend/actions')
-    })
-    test('Validate Click on me Button', async({page}) =>{
-        await page.locator('#click').click()
-        expect(await page.locator('#click_result').innerText()).toBe('You clicked on a button!')
-     
-    })
-    test('Validate Right-click on me Button', async({page}) =>{
-        await page.locator('#right-click').click({ button : 'right' })
-        expect(await page.locator('#right_click_result').innerText()).toBe('You right-clicked on a button!')
-     
-    })
-    test('Validate double click on me Button', async({page}) =>{
-        await page.locator('#double-click').dblclick()
-        expect(await page.locator('#double_click_result').innerText()).toBe('You double-clicked on a button!')
-     
-    })
-    test('Validate darg and drop ', async({page}) =>{
-        await page.locator('#double-click').dblclick()
-        expect(await page.locator('#double_click_result').innerText()).toBe('You double-clicked on a button!')
-     
-    })
-    test('fill-clear input box', async({page}) =>{
-        const inputel = page.locator('#input_box')
-        await inputel.fill('Playwright')
-        expect(await inputel.getAttribute('value')).toBe('Playwright')
-        await inputel.clear()
-        await inputel.fill('TypeScript')
-        expect(await inputel.getAttribute('value')).toBe('TypeScript')
+import { test, expect } from '@playwright/test';
 
-    })
-})
+test.describe('Playwright Actions @Regression', () => {
+  test.beforeEach( async({ page }) => {
+    await page.goto('https://www.techglobal-training.com/frontend/actions');
+  });
+
+  /*
+  Go to https://www.techglobal-training.com/frontend/actions
+  Click on "Click on me" button
+  Validate "You clicked on a button!" text is visible
+  */
+
+  test('Click on an element', async({ page }) => {
+    // await page.click('#click');
+    await page.locator('#click').click();
+    // await page.getByRole('button', { name: 'Click on me', exact: true }).click();
+    // await page.getByText('Click on me', { exact: true }).click();
+
+    expect(await page.locator('#click_result').innerText()).toBe('You clicked on a button!');
+    // await expect(page.getByText('You clicked on a button!')).toBeVisible();
+
+    // Right click or double click on elements
+    await page.locator('#right-click').click({ button: 'right'});
+    //await page.locator('#double-click').click({ clickCount: 2});
+    await page.locator('#double-click').dblclick();
+  });
+
+
+  test('Fill-Clear input box', async({ page }) => {
+    const inputElement = page.locator('#input_box');
+
+    await inputElement.fill('Playwright');
+    expect(await inputElement.getAttribute('value')).toBe('Playwright');
+
+    // Clear with fill('');
+    await inputElement.fill('');
+
+    await inputElement.fill('TypeScript');
+    expect(await inputElement.getAttribute('value')).toBe('TypeScript');
+
+    // Clear with clear();
+    await inputElement.clear();
+
+    expect(await inputElement.getAttribute('placeholder')).toBe('Enter your message...');
+  });
+});
