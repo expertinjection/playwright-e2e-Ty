@@ -1,25 +1,28 @@
-import {test, expect} from '@playwright/test'
-test.describe('Download & Upload ', () => {
-    test.beforeEach(async({page})=>{
-        await page.goto('https://www.techglobal-training.com/frontend/file-download')
-    })
-    test('Download File', async({page}) => {
-   
-        const [download] = await Promise.all([
-            page.waitForEvent('download'),
-            page.click('#file_download')
-        ])
+import { test, expect } from '@playwright/test';
+import fs from 'fs';
+
+test.describe('File Upload & Download', () => {
+  test.beforeEach(async({ page }) => {
+    await page.goto('https://www.techglobal-training.com/frontend/file-download');
+  });
+
+  test('File Download', async ({ page }) => {
+
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.locator('#file_download').click()
+    ]);
+
+    const downloadPath = 'downloads/' + download.suggestedFilename();
+    await download.saveAs(downloadPath);
     
-        const path = 'downloads/' + download.suggestedFilename()
-    
-        await download.saveAs(path)
-    })
-    
-    test('Upload File', async({page}) => {
-        const uploadLink = page.locator('#file_upload')
-    
-        await uploadLink.setInputFiles('downloads/SampleText.txt')
-        // const resulatLocater = page.locator('.notification')
-        // await expect( resulatLocater).toContainText('You uploaded SampleText.txt')
-    })
-})
+    expect(fs.existsSync(downloadPath)).toBeTruthy();
+  });
+
+  test('File Upload', async ({ page }) => {
+    await page.locator('#file_upload').setInputFiles('test-files/sample.txt');
+    await page.locator('#file_submit').click();
+
+    await expect(page.locator('#result')).toContainText('sample.txt');
+  });
+});
