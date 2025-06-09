@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
-import { FrontendTestingPage } from "../pages/FrontendTestingPage";
-import { BackendTestingPage } from "../pages/BackendTestingPage";
+import { FrontendTestingPage } from "../../pages/FrontendTestingPage";
+import { BackendTestingPage } from "../../pages/BackendTestingPage";
 import dotenv from 'dotenv';
 import path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '.env') });
