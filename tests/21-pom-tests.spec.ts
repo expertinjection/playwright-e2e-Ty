@@ -1,6 +1,9 @@
 import { test, expect } from "@playwright/test";
 import { FrontendTestingPage } from "../pages/FrontendTestingPage";
 import { BackendTestingPage } from "../pages/BackendTestingPage";
+import dotenv from 'dotenv';
+import path from 'path';
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const frontendPracticePageTexts: string[] = [
   "HTML Elements",
@@ -17,7 +20,7 @@ const frontendPracticePageTexts: string[] = [
 
 test.describe("POM Testing", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('https://www.techglobal-training.com/backend');
+    await page.goto('/');
   });
 
   frontendPracticePageTexts.forEach((frontendPracticePageText) => {
