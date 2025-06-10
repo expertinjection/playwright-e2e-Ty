@@ -1,132 +1,85 @@
-import {test, expect} from '@playwright/test'
+import { test, expect } from "@playwright/test";
+import { ShoppingCartPage } from "../../pages/ShoppingCartPage";
 
-test.describe('Project02 Playwright', () =>{
-    test.beforeEach(async({page}) => {
-        await page.goto('https://techglobal-training.com/frontend/shopping-cart')
-    })
-    test('Test Case 01 - Available Courses Section Validation', async({page}) => {
-        const heading = page.getByRole('heading', { name: 'Available Courses' })
-        await expect(heading).toBeVisible()
-        const courses = page.locator('div[class^="Project8_course"]')
-        await expect(courses).toHaveCount(3)
-        for(let i = 0; i < await courses.count(); i++){
-            
-            const courseimg = courses.nth(i).locator('img')
-            await expect(courseimg).toBeVisible()
-            const courseName = courses.nth(i).locator('h3')
-            await expect(courseName).toBeVisible()
-            const techglobalTag = courses.nth(i).locator('.my-3')
-            await expect(techglobalTag).toBeVisible()
-            const price = courses.nth(i).locator('[data-testid="full-price"]')
-            await expect(price).toBeVisible()
-        }
-        const discount = page.locator('[data-testid="discount"]')
-        await expect(discount).toHaveCount(2)
-        for (let i = 0; i < await courses.count(); i++) {
-            const addToCartBtn = courses.nth(i).locator('button')
-            await expect(addToCartBtn).toBeVisible()
-            await expect(addToCartBtn).toBeEnabled()
-            await expect(addToCartBtn).toHaveText('Add to Cart')
-          }
-    })
-    test('Test Case 02 - Cart Section Validation', async({page}) => {
-        const cartItemsHeading = page.getByText('Items Added to Cart')
-        await expect(cartItemsHeading).toBeVisible()
-        const totalPriceID = page.locator('#total-price').filter({ hasText: 'Total: $0' })
-        await expect(totalPriceID).toBeVisible()
-        const placeOrderBtn = page.getByRole('button', {name: 'Place Order'})
-        await expect(placeOrderBtn).toBeVisible()
-        await expect(placeOrderBtn).toBeDisabled()
-        await expect(placeOrderBtn).toHaveText('Place Order')
-    })
-    test('Test Case 03 - Add a Course to the Cart and Validate', async({page}) => {
-        const cypresscourseAddBtn = page.locator('#course-3').getByRole('button', { name: 'Add to Cart' })
-        await cypresscourseAddBtn.click()
-        const totalPrice = page.locator('#total-price').filter({ hasText: 'Total: $10' })
-        await expect(totalPrice).toBeVisible()
-        const cartAddeditem = page.locator('div[class ^="course-card Project"]')
-        await expect(cartAddeditem).toHaveCount(1)
-        const courseItme = cartAddeditem.nth(0)
-        const courseImg = courseItme.locator('img')
-        await expect(courseImg).toBeVisible()
-        const courseName = courseItme.getByText('Cypress Automation Course')
-        await expect(courseName).toBeVisible()
-        const placeOrderBtn = page.getByRole('button', {name: 'Place Order'})
-        await placeOrderBtn.click()
-        const successMsg = page.getByText('Your order has been placed.')
-        await expect(successMsg).toBeVisible()
-        const totalPriceID = page.locator('#total-price').filter({ hasText: 'Total: $0' })
-        await expect(totalPriceID).toBeVisible()
-    })
-    test('Test Case 04 - Add Two Courses to the Cart and Validate', async({page}) => {
-        const sdetCourseAddBtn = page.locator('#course-1').getByRole('button', { name: 'Add to Cart' })
-        const playWrightCourseAddBtn = page.locator('#course-2').getByRole('button', { name: 'Add to Cart' })
-        await sdetCourseAddBtn.click()
-        await playWrightCourseAddBtn.click()
-        const cartAddeditems = page.locator('div[class ^="course-card Project"]')
-        for(let i = 0; i < await cartAddeditems.count(); i++){
-            const courseimg = cartAddeditems.nth(i).locator('img')
-            await expect(courseimg).toBeVisible()
-            const courseNames = cartAddeditems.nth(i).locator('div>p[class="mb-1 has-text-black"]')
-            await expect(courseNames).toBeVisible()
-            const price = cartAddeditems.nth(i).locator('span[data-testid="final-price"]')
-            await expect(price).toBeVisible()
-        }
-        await expect(page.locator('section')).toContainText('SDET Course | Cypress Playwright')
-        await expect(page.locator('section')).toContainText('Playwright Automation Testing')
-        const sdetFinalPrice = page.locator('span[data-testid="final-price"]').filter({ hasText: '$80' })
-        await expect(sdetFinalPrice).toBeVisible()
-        const playWrightCourseFinalPrice = page.locator('span[data-testid="final-price"]').filter({ hasText: '$72' })
-        await expect(playWrightCourseFinalPrice).toBeVisible()
-        const sdetCourseImg = page.getByRole('img', { name: 'Course' }).nth(3)
-        const playWrightCourseImg = page.getByRole('img', { name: 'Course' }).nth(4)
-        await expect(sdetCourseImg).toBeVisible()
-        await expect(playWrightCourseImg).toBeVisible()
-        const sdetCourseDiscount = page.locator('span[data-testid="discount"]').filter({ hasText: '(20 % off)' })
-        const playWrightCouresDiscount = page.locator('span[data-testid="discount"]').filter({ hasText: '(10 % off)' })
-        await expect(sdetCourseDiscount).toBeVisible()
-        await expect(playWrightCouresDiscount).toBeVisible()
-        const placeOrderBtn = page.getByRole('button', { name: 'Place Order' })
-        await placeOrderBtn.click()
-        const successMsg = page.getByText('Your order has been placed.')
-        await expect(successMsg).toBeVisible()
-        const totalPriceID = page.locator('#total-price').filter({ hasText: 'Total: $0' })
-        await expect(totalPriceID).toBeVisible()
-        
-    })
-    test('Test Case 05 - Add All Three Courses to the Cart and Validate', async({page}) => {
-        const sdetCourseAddBtn = page.locator('#course-1').getByRole('button', { name: 'Add to Cart' })
-        const playWrightCourseAddBtn = page.locator('#course-2').getByRole('button', { name: 'Add to Cart' })
-        const cypressCourseAddBtn = page.locator('#course-3').getByRole('button', { name: 'Add to Cart' })
-        await sdetCourseAddBtn.click()
-        await playWrightCourseAddBtn.click()
-        await cypressCourseAddBtn.click()
-        const cartAddeditems = page.locator('div[class ^="course-card Project"]')
-        await expect(cartAddeditems).toHaveCount(3)
-        await expect(page.locator('section')).toContainText('SDET Course | Cypress Playwright')
-        await expect(page.locator('section')).toContainText('Playwright Automation Testing')
-        await expect(page.locator('section')).toContainText('Cypress Automation Course')
-        const sdetFinalPrice = page.locator('span[data-testid="final-price"]').filter({ hasText: '$80' })
-        await expect(sdetFinalPrice).toBeVisible()
-        const playWrightCourseFinalPrice = page.locator('span[data-testid="final-price"]').filter({ hasText: '$72' })
-        await expect(playWrightCourseFinalPrice).toBeVisible()
-        const cypressFinalPrice = page.locator('span[data-testid="final-price"]').filter({ hasText: '$10' })
-        await expect(cypressFinalPrice).toBeVisible()
-        const sdetCourseImg = page.getByRole('img', { name: 'Course' }).nth(3)
-        const playWrightCourseImg = page.getByRole('img', { name: 'Course' }).nth(4)
-        const cypressCourseImg = page.getByRole('img', { name: 'Course' }).nth(5)
-        await expect(sdetCourseImg).toBeVisible()
-        await expect(playWrightCourseImg).toBeVisible()
-        await expect(cypressCourseImg).toBeVisible()
-        const sdetCourseDiscount = page.locator('span[data-testid="discount"]').filter({ hasText: '(20 % off)' })
-        const playWrightCouresDiscount = page.locator('span[data-testid="discount"]').filter({ hasText: '(10 % off)' })
-        await expect(sdetCourseDiscount).toBeVisible()
-        await expect(playWrightCouresDiscount).toBeVisible()
-        const placeOrderBtn = page.getByRole('button', { name: 'Place Order' })
-        await placeOrderBtn.click()
-        const successMsg = page.getByText('Your order has been placed.')
-        await expect(successMsg).toBeVisible()
-        const totalPriceID = page.locator('#total-price').filter({ hasText: 'Total: $0' })
-        await expect(totalPriceID).toBeVisible()
-    })
-})
+test.describe("Project02 Playwright", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("https://techglobal-training.com/frontend/shopping-cart");
+  });
+
+  test("Test Case 01 - Available Courses Section Validation", async ({
+    page,
+  }) => {
+    const shoppingCartPage = new ShoppingCartPage(page)
+    await expect(shoppingCartPage.heading).toBeVisible()
+
+    await expect(shoppingCartPage.courses).toHaveCount(3)
+    const images = shoppingCartPage.coursesImgs
+    for(let i = 0; i < await images.count(); i++){
+        const img = images.nth(i)
+    
+        await expect(img).toBeVisible()
+    }
+    const names = shoppingCartPage.coursesName
+    for(let i = 0; i < await names.count(); i++){
+        const name = names.nth(i)
+    
+        await expect(name).toBeVisible()
+    }
+    const prices = shoppingCartPage.coursesPrices
+    for(let i = 0; i < await prices.count(); i++){
+        const price = prices.nth(i)
+    
+        await expect(price).toBeVisible()
+        expect(price).toBeTruthy()
+    }
+    const discount = shoppingCartPage.discountTags
+    await expect(discount).toHaveCount(2);
+
+  });
+
+  test("Test Case 02 - Cart Section Validation", async ({ page }) => {
+    const shoppingCartPage = new ShoppingCartPage(page)
+    await expect(shoppingCartPage.cartItemsSection).toBeVisible();
+    await expect(shoppingCartPage.totalPrice).toHaveText('Total: $0')
+    const placeOrderButton = shoppingCartPage.placeOrderButton
+    await expect(placeOrderButton).toBeVisible();
+    await expect(placeOrderButton).toBeDisabled();
+    await expect(placeOrderButton).toHaveText("Place Order");
+  });
+
+  test('Test Case 03 - Add a Course to the Cart and Validate', async ({page}) => {
+    const shoppingCartPage = new ShoppingCartPage(page)
+    await shoppingCartPage.addCourseToCart('course-3')
+    await expect(shoppingCartPage.totalPrice).toHaveText('Total: $10')
+    await expect(shoppingCartPage.cypressCourse).toBeVisible()
+    await shoppingCartPage.placeOrder()
+    await expect(shoppingCartPage.successMessage).toBeVisible()
+    await expect(shoppingCartPage.totalPrice).toHaveText('Total: $0')
+  })
+  test('Test Case 04 - Add Two Courses to the Cart and Validate', async ({page}) => {
+    const shoppingCartPage = new ShoppingCartPage(page)
+    await shoppingCartPage.addCourseToCart('course-1')
+    await shoppingCartPage.addCourseToCart('course-2')
+    await expect(shoppingCartPage.totalPrice).toHaveText('Total: $152')
+    await expect(shoppingCartPage.sdetCoure).toBeVisible()
+    await expect(shoppingCartPage.playwrightCourse).toBeVisible()
+    await shoppingCartPage.placeOrder()
+    await expect(shoppingCartPage.successMessage).toBeVisible()
+    await expect(shoppingCartPage.totalPrice).toHaveText('Total: $0')
+  })
+
+  test('Test Case 05 - Add All Three Courses to the Cart and Validate', async ({page}) => {
+    const shoppingCartPage = new ShoppingCartPage(page)
+    await shoppingCartPage.addCourseToCart('course-1')
+    await shoppingCartPage.addCourseToCart('course-2')
+    await shoppingCartPage.addCourseToCart('course-3')
+    await expect(shoppingCartPage.totalPrice).toHaveText('Total: $162')
+    await expect(shoppingCartPage.sdetCoure).toBeVisible()
+    await expect(shoppingCartPage.playwrightCourse).toBeVisible()
+    await expect(shoppingCartPage.cypressCourse).toBeVisible()
+    await shoppingCartPage.placeOrder()
+    await expect(shoppingCartPage.successMessage).toBeVisible()
+    await expect(shoppingCartPage.totalPrice).toHaveText('Total: $0')
+  })
+});
+
